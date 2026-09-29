@@ -1,5 +1,10 @@
 python-dotenv==0.19.0
-Flask==2.2.5
 gunicorn
 flask-cors
 pymongo
+selenium==4.1.0
+webdriver-manager==3.5.2
+requests==2.26.0
+Flask==2.2.5
+Werkzeug==2.2.3
+cryptography
