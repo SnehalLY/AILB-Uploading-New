@@ -1,0 +1,10 @@
+selenium==4.1.0
+webdriver-manager==3.5.2
+requests==2.26.0
+python-dotenv==0.19.0
+Flask==2.2.5
+Werkzeug==2.2.3
+gunicorn
+flask-cors
+cryptography
+pymongo
