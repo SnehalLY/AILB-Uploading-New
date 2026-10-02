@@ -90,7 +90,7 @@ class Settings:
             frontend_url=frontend_url,
             allowed_origins=_csv("ALLOWED_ORIGINS", frontend_url),
             imocha_base_url=os.getenv("IMOCHA_BASE_URL", "https://app.imocha.io").strip().rstrip("/"),
-            imocha_write_enabled=_bool("IMOCHA_WRITE_ENABLED", True),
+            imocha_write_enabled=_bool("IMOCHA_WRITE_ENABLED", False),
             mongo_url=os.getenv("MONGO_URL") or None,
             mongo_database=os.getenv("MONGO_DATABASE", "ailbuploading_new").strip(),
             mongo_collection=os.getenv("MONGO_COLLECTION", "counters").strip(),
