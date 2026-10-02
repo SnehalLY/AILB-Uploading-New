@@ -96,7 +96,7 @@ class Settings:
             mongo_collection=os.getenv("MONGO_COLLECTION", "counters").strip(),
             counter_id=os.getenv("COUNTER_ID", "local_development").strip(),
             rsa_private_key_path=_project_path(
-                os.getenv("RSA_PRIVATE_KEY_PATH", "Backend/private_key.pem")
+                os.getenv("RSA_PRIVATE_KEY_PATH", "Backend/private_key.pem").strip()
             ),
         )
         settings.validate()
