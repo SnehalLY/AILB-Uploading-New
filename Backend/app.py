@@ -1,9 +1,10 @@
 import logging
 import os
 import ssl
+from pathlib import Path
 
 from cryptography.hazmat.primitives import serialization
-from flask import Flask, jsonify, request
+from flask import Flask, abort, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 from config import settings
@@ -14,7 +15,13 @@ from login import main_to_execute
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+
+app = Flask(
+    __name__,
+    static_folder=str(FRONTEND_DIST / "assets"),
+    static_url_path="/assets",
+)
 CORS(
     app,
     resources={
@@ -28,7 +35,7 @@ CORS(
 )
 
 
-@app.get("/")
+@app.get("/api/public-key")
 def serve_public_key():
     try:
         public_key_pem = get_public_key().public_bytes(
@@ -95,6 +102,29 @@ def handle_login():
 @app.get("/openssl-version")
 def openssl_version():
     return ssl.OPENSSL_VERSION
+
+
+@app.get("/")
+def serve_frontend():
+    return send_from_directory(FRONTEND_DIST, "index.html")
+
+
+@app.get("/<path:path>")
+def serve_frontend_route(path: str):
+    if (
+        path == "api"
+        or path.startswith("api/")
+        or path == "assets"
+        or path.startswith("assets/")
+        or path == "openssl-version"
+        or path.startswith("openssl-version/")
+    ):
+        abort(404)
+
+    requested_file = FRONTEND_DIST / path
+    if requested_file.is_file():
+        return send_from_directory(FRONTEND_DIST, path)
+    return send_from_directory(FRONTEND_DIST, "index.html")
 
 
 if __name__ == "__main__":

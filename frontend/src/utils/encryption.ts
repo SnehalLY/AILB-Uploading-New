@@ -1,17 +1,3 @@
-import { assertSafeEndpoint, getCoordinatorUrl } from '../config';
-
-// Helper to get backend URL from coordinator
-async function getNextBackendUrlFromCoordinator(): Promise<string> {
-  const coordinatorUrl = await getCoordinatorUrl();
-  const response = await fetch(`${coordinatorUrl}/next-backend`);
-  if (!response.ok) throw new Error('Failed to get backend URL');
-  const data = await response.json();
-  if (!data || typeof data.backend_url !== 'string') {
-    throw new Error('Coordinator returned an invalid backend URL');
-  }
-  return assertSafeEndpoint('coordinator backend_url', data.backend_url);
-}
-
 // Public key will be fetched from backend
 let PUBLIC_KEY: string | null = null;
 let KEY_FETCH_TIMESTAMP: number = 0;
@@ -26,11 +12,9 @@ async function fetchPublicKey(forceRefresh: boolean = false) {
             return PUBLIC_KEY;
         }
 
-        const API_URL = await getNextBackendUrlFromCoordinator();
         // Add a timestamp to prevent caching issues
-        const response = await fetch(`${API_URL}?t=${now}`, {
+        const response = await fetch(`/api/public-key?t=${now}`, {
             method: 'GET',
-            mode: 'cors'
         });
 
         if (!response.ok) {
