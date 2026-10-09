@@ -4,9 +4,9 @@ This repository is an isolated version of the question-upload application. It co
 
 ## Safety first
 
-`IMOCHA_WRITE_ENABLED` defaults to `false`. In that state, `POST /api/login` returns an explicit 503 response before launching Selenium, and `final_save()` contains a second guard that refuses to click iMocha save controls. Never enable writes with production credentials or a production question bank.
+This deployment has iMocha write operations enabled in `Backend/config.py`, so uploads can save changes without a host environment variable. Never deploy it with unapproved credentials or an unintended question bank.
 
-Known legacy service endpoints and legacy MongoDB identifiers are rejected during configuration validation. Development mode also refuses `IMOCHA_WRITE_ENABLED=true`.
+Known legacy service endpoints and legacy MongoDB identifiers are rejected during configuration validation.
 
 ## Architecture
 
@@ -31,7 +31,6 @@ Copy `.env.example` to `.env` for backend/coordinator development and copy `fron
 | Variable | Purpose |
 | --- | --- |
 | `APP_ENV` | `development`, `staging`, or `production`. |
-| `IMOCHA_WRITE_ENABLED` | External-write switch; keep `false` until a safe staging environment is verified. |
 | `FRONTEND_URL` | Canonical URL of this project's frontend. |
 | `ALLOWED_ORIGINS` | Comma-separated CORS origins; defaults to `FRONTEND_URL`. |
 | `BACKEND_URLS` | Comma-separated URLs for this project's backend instances. |
@@ -96,14 +95,7 @@ Create a new database and a least-privilege user dedicated to this project. Set 
 
 ## iMocha write mode
 
-Safe initial configuration:
-
-```dotenv
-APP_ENV=development
-IMOCHA_WRITE_ENABLED=false
-```
-
-With this configuration the upload API reports that writes are disabled and does not launch the automation. Before enabling writes, use a staging environment, a non-production iMocha account, a test question bank, new RSA keys, and a separate MongoDB database. Then set `APP_ENV=staging` and explicitly set `IMOCHA_WRITE_ENABLED=true` only for the controlled test.
+iMocha writes are enabled directly in `Backend/config.py`. Use an approved iMocha account and question bank, new RSA keys, and a separate MongoDB database before deploying this build.
 
 ## Independent deployment
 
